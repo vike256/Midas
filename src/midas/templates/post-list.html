@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="post-list-container">
+  <h1>Posts</h1>
+  {% if posts %}
+  <ul class="post-list">
+    {% for post in posts %}
+    <li class="post-item">
+      <a href="{{ post.url }}" class="post-link">{{ post.title }}</a>
+      {% if post.date %}
+      <span class="post-date">{{ post.date }}</span>
+      {% endif %}
+      {% if post.description %}
+      <p class="post-description">{{ post.description }}</p>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No posts yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

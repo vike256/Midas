@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="{{ page.language if page else languages.default }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page and page.title %}{{ page.title }} — {% endif %}{{ site.name }}</title>
+  {% if page and page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+  <link rel="stylesheet" href="/midas.css">
+  <link rel="stylesheet" href="/style.css">
+  {% if config.rss and config.rss.default %}
+  {% set page_lang = page.language if page and page.language else languages.default %}
+  {% set rss_path = "/" + (config.rss.default if page_lang == languages.default else (config.rss.additional | replace('{lang}', page_lang))) %}
+  <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ rss_path }}">
+  {% endif %}
+</head>
+<body class="{{ page.type if page and page.type else '' }}">
+  <header class="site-header">
+    <a href="/" class="site-name">{{ site.name }}</a>
+    <nav>
+      {% if config.nav %}
+        {% for item in config.nav %}
+        <a href="{{ item.url }}">{{ item.title }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="/posts/">Posts</a>
+      {% endif %}
+      {% if languages.additional %}
+        {% for lang in languages.additional %}
+        <a href="/{{ lang }}/posts/">{{ lang | upper }}</a>
+        {% endfor %}
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    {% if site.copyright %}
+    <p>{{ site.copyright }}</p>
+    {% endif %}
+    {% if config.rss and config.rss.default %}
+    <div class="footer-links">
+      <a href="/{{ config.rss.default }}">RSS</a>
+      {% if languages.additional %}
+        {% for lang in languages.additional %}
+        <a href="/{{ config.rss.additional | replace('{lang}', lang) }}">{{ lang | upper }} RSS</a>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="footer-credit">
+      <a href="https://github.com/vike256/Midas">Created with Midas</a>
+    </div>
+  </footer>
+</body>
+</html>

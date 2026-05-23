@@ -1,0 +1,28 @@
+site:
+  url: "https://midas.niila.fi"
+  name: "Midas"
+  description: "Midas Template"
+
+languages:
+  default: en
+
+nav:
+  - title: "Posts"
+    url: "/posts/"
+
+home:
+  name: "Midas"
+  bio: "A minimalist static site generator for blogs."
+  profilePic: "/img/profile.webp"
+  socials:
+    - name: github
+      url: "https://github.com/vike256/midas"
+    - name: website
+      url: "https://midas.niila.fi"
+  cards:
+    - title: "Niila's homepage"
+      url: "https://niila.fi"
+    - title: "Niila's GitHub"
+      url: "https://github.com/vike256"
+
+recentPosts: 3

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="home-container">
+  {% if home.profilePic %}
+  <img src="{{ home.profilePic }}" alt="Profile picture" class="profile-pic">
+  {% endif %}
+
+  {% if home.name %}
+  <h1 class="home-name">{{ home.name }}</h1>
+  {% endif %}
+
+  {% if home.bio %}
+  <p class="home-bio">{{ home.bio }}</p>
+  {% endif %}
+
+  {% if home.socials %}
+  <div class="socials">
+    {% for social in home.socials %}
+    <a href="{{ social.url }}" aria-label="{{ social.name }}" class="social-link">
+      {{ social.name | icon | safe }}
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if home.cards %}
+  <div class="cards">
+    {% for card in home.cards %}
+    <a href="{{ card.url }}" class="card">
+      <span class="card-title">{{ card.title }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% for lang, posts in posts_by_language.items() %}
+  {% set lang_posts = posts[:config.recentPosts] %}
+  {% if lang_posts %}
+  <section class="recent-posts">
+    <h2>
+      {% if lang == languages.default %}Recent Posts{% else %}Recent Posts ({{ lang | upper }}){% endif %}
+    </h2>
+    <ul>
+      {% for post in lang_posts %}
+      <li>
+        <a href="{{ post.url }}">{{ post.title }}</a>
+        {% if post.date %}
+        <span class="post-date">{{ post.date }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% if lang == languages.default %}
+    <a href="/posts/" class="all-posts-link">View all posts &rarr;</a>
+    {% else %}
+    <a href="/{{ lang }}/posts/" class="all-posts-link">View all posts ({{ lang }}) &rarr;</a>
+    {% endif %}
+  </section>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

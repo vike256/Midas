@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "midas-ssg"
+version = "0.1.0"
+description = "A minimal, opinionated static site generator"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [{name = "Niila Viinamäki"}]
+dependencies = [
+    "markdown>=3.5",
+    "Pygments>=2.16",
+    "Jinja2>=3.1",
+    "PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://midas.niila.fi"
+Repository = "https://github.com/vike256/Midas"
+
+[project.scripts]
+midas = "midas.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+midas = ["starter/**/*", "templates/**/*", "static/**/*"]
