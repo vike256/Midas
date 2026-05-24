@@ -1,3 +1,8 @@
 """Midas — a minimal, opinionated static site generator."""
 
-__version__ = "0.1.12"
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("midas-ssg")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
