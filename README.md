@@ -185,7 +185,7 @@ rss:
 | `site.fediverse` | Fediverse handle (e.g. `@user@example.com`). Adds a `<meta name="fediverse:creator">` tag. |
 | `languages.default` | Default language code (e.g. `en`). |
 | `languages.additional` | List of additional language codes (e.g. `[fi, sv]`). |
-| `nav` | List of `{title, url}` objects for the navigation bar. If omitted, a "Posts" link and language switchers are shown automatically. |
+| `nav` | List of `{title, url}` objects for the navigation bar. If omitted, no navigation bar is shown. |
 | `home.name` | Name displayed on the homepage. |
 | `home.bio` | Short bio on the homepage. |
 | `home.profilePic` | Path to a profile picture. Auto-detected from `content/img/profile.*` if not set. |

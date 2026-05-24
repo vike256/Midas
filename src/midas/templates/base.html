@@ -18,20 +18,13 @@
 <body class="{{ page.type if page and page.type else '' }}">
   <header class="site-header">
     <a href="/" class="site-name">{{ site.name }}</a>
+    {% if config.nav %}
     <nav>
-      {% if config.nav %}
-        {% for item in config.nav %}
-        <a href="{{ item.url }}">{{ item.title }}</a>
-        {% endfor %}
-      {% else %}
-        <a href="{{ '/' + config.postPrefix + '/' if config.postPrefix else '/posts/' }}">Posts</a>
-      {% endif %}
-      {% if not config.nav %}
-        {% for lang in languages.additional %}
-        <a href="/{{ lang }}/">{{ lang | upper }}</a>
-        {% endfor %}
-      {% endif %}
+      {% for item in config.nav %}
+      <a href="{{ item.url }}">{{ item.title }}</a>
+      {% endfor %}
     </nav>
+    {% endif %}
   </header>
 
   <main>

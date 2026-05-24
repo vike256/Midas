@@ -45,7 +45,7 @@ nav:
     url: "/about/"
 ```
 
-Custom navigation links for the header. If omitted, Midas shows a "Posts" link and language switchers automatically.
+Custom navigation links for the header. If omitted, no navigation bar is shown.
 
 ## home
 
