@@ -47,13 +47,13 @@
       <a href="/{{ config.rss.default }}">RSS</a>
       {% if languages.additional %}
         {% for lang in languages.additional %}
-        <a href="/{{ config.rss.additional | replace('{lang}', lang) }}">{{ lang | upper }} RSS</a>
+        · <a href="/{{ config.rss.additional | replace('{lang}', lang) }}">{{ lang | upper }} RSS</a>
         {% endfor %}
       {% endif %}
     </div>
     {% endif %}
     <div class="footer-credit">
-      <a href="https://github.com/vike256/Midas">Created with Midas</a>
+      <a href="https://midas.niila.fi">Created with Midas</a>
     </div>
   </footer>
 </body>
