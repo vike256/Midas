@@ -21,7 +21,7 @@ home:
     - name: website
       url: "https://midas.niila.fi"
   cards:
-    - title: "Documentation"
+    - title: "Start using Midas"
       url: "/p/getting-started/"
 
 recentPosts: 3

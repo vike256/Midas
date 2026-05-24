@@ -24,13 +24,6 @@ Run `midas init` to scaffold a project into the current directory. The directory
 midas init
 ```
 
-Or scaffold into a new folder:
-
-```bash
-midas init my-blog
-cd my-blog
-```
-
 ## Project layout
 
 After `midas init`, your project looks like this:
@@ -41,9 +34,12 @@ my-blog/
 ├── midas.yaml          # Site configuration
 ├── content/            # Your markdown content
 │   ├── index.md        # Homepage
+│   ├── 404.md          # Not-found page
 │   ├── p/              # Blog posts (matches postPrefix)
 │   └── img/            # Images (copied as-is to _dist/)
-└── static/             # Other static assets (favicons, fonts, etc.)
+└── static/             # Other static assets
+    ├── style.css       # Your CSS overrides
+    └── favicon.svg     # Site icon
 ```
 
 The built site is written to `_dist/`.
@@ -78,11 +74,19 @@ Your post content here.
 
 Any `.md` file outside `p/` becomes a page. For example, `content/about.md` becomes `/about/`.
 
+Add standalone pages to `midas.yaml` under `nav:` if you want them in the top navigation:
+
+```yaml
+nav:
+  - title: "About"
+    url: "/about/"
+```
+
 ### Homepage
 
-`content/index.md` automatically becomes the homepage (the `type: home` frontmatter is inferred for `index.md`). You can add frontmatter fields like `name`, `bio`, or `profilePic` right in the file, or define them in `midas.yaml` under `home:`.
+`content/index.md` is your homepage. Most of the content is configured in `midas.yaml` under `home:`.
 
-## Building for production
+## Building and deploying
 
 When you are ready to publish, run:
 
@@ -92,12 +96,14 @@ midas build
 
 This generates the static site in `_dist/`.
 
-## Deploying
-
-Upload the contents of `_dist/` to a static host:
+Push your project to GitHub and connect it to a static host:
 
 - **GitHub Pages** — deploy via GitHub Actions
-- **Cloudflare Pages** — connect your repo and set the build command to `midas build`
+- **Cloudflare Pages** — connect your repo and use the following settings:
+  - Build command: `pip install midas-ssg && midas build`
+  - Build output: `_dist`
+
+On Cloudflare Pages, you can also create a [Deploy Hook](https://developers.cloudflare.com/pages/configuration/deploy-hooks/). This gives you a URL you can call to trigger a new build automatically—for example, from a CMS webhook or a scheduled job.
 
 ## Customizing your site
 
@@ -111,17 +117,6 @@ body {
   color: #fafafa;
 }
 ```
-
-### Template overrides
-
-Create a `templates/` folder and drop in only the files you want to override. For example, to customize the homepage:
-
-```bash
-mkdir templates
-cp $(python -c "import midas; print(midas.__file__)")/../templates/home.html templates/
-```
-
-Then edit `templates/home.html`. When you run `midas build`, you will see a warning that the template is overridden and will no longer receive automatic updates.
 
 ### Configuration
 
