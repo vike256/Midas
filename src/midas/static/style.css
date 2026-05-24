@@ -352,6 +352,13 @@ main {
   padding-left: 1.5rem;
 }
 
+.post-body ul ul,
+.post-body ul ol,
+.post-body ol ul,
+.post-body ol ol {
+  margin: 0.25rem 0;
+}
+
 .post-body li {
   margin-bottom: 0.35rem;
 }

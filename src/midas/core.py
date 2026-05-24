@@ -96,6 +96,7 @@ def generate_slug(path: Path) -> str:
 
 def make_markdown() -> markdown.Markdown:
     return markdown.Markdown(
+        tab_length=2,
         extensions=[
             "fenced_code",
             "tables",
