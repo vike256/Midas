@@ -6,6 +6,7 @@ DEFAULT_CONFIG = {
         "name": "Midas",
         "description": "Midas Template",
         "copyright": "",
+        "fediverse": "",
     },
     "languages": {
         "default": "en",

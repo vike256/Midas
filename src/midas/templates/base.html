@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if page and page.title %}{{ page.title }} — {% endif %}{{ site.name }}</title>
   {% if page and page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+  {% if site.fediverse %}<meta name="fediverse:creator" content="{{ site.fediverse }}">{% endif %}
   <link rel="stylesheet" href="/midas.css">
   <link rel="stylesheet" href="/style.css">
   {% if config.rss and config.rss.default %}

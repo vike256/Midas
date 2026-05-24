@@ -2,6 +2,7 @@ site:
   url: "https://midas.niila.fi"
   name: "Midas"
   description: "Midas Template"
+  # fediverse: "@user@instance"
 
 languages:
   default: en
