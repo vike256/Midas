@@ -12,6 +12,7 @@ DEFAULT_CONFIG = {
         "additional": [],
     },
     "home": {},
+    "postPrefix": "p",
     "recentPosts": 3,
     "rss": {
         "default": "feed.xml",

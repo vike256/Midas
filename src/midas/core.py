@@ -249,8 +249,13 @@ def build(config: dict) -> None:
                 output_file = DIST_DIR / "index.html"
             elif page_type == "blog":
                 if language == config["languages"]["default"]:
-                    url = f"/{slug}/"
-                    output_file = DIST_DIR / slug / "index.html"
+                    post_prefix = config.get("postPrefix", "")
+                    if post_prefix:
+                        url = f"/{post_prefix}/{slug}/"
+                        output_file = DIST_DIR / post_prefix / slug / "index.html"
+                    else:
+                        url = f"/{slug}/"
+                        output_file = DIST_DIR / slug / "index.html"
                 else:
                     url = f"/{language}/{slug}/"
                     output_file = DIST_DIR / language / slug / "index.html"
@@ -366,11 +371,16 @@ def build(config: dict) -> None:
             continue
 
         if lang == config["languages"]["default"]:
-            list_url = "/posts/"
-            list_output = DIST_DIR / "posts" / "index.html"
+            post_prefix = config.get("postPrefix", "")
+            if post_prefix:
+                list_url = f"/{post_prefix}/"
+                list_output = DIST_DIR / post_prefix / "index.html"
+            else:
+                list_url = "/posts/"
+                list_output = DIST_DIR / "posts" / "index.html"
         else:
-            list_url = f"/{lang}/posts/"
-            list_output = DIST_DIR / lang / "posts" / "index.html"
+            list_url = f"/{lang}/"
+            list_output = DIST_DIR / lang / "index.html"
 
         template = env.get_template("post-list.html")
         html = template.render(

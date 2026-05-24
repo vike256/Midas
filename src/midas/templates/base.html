@@ -22,11 +22,11 @@
         <a href="{{ item.url }}">{{ item.title }}</a>
         {% endfor %}
       {% else %}
-        <a href="/posts/">Posts</a>
+        <a href="{{ '/' + config.postPrefix + '/' if config.postPrefix else '/posts/' }}">Posts</a>
       {% endif %}
       {% if languages.additional %}
         {% for lang in languages.additional %}
-        <a href="/{{ lang }}/posts/">{{ lang | upper }}</a>
+        <a href="/{{ lang }}/">{{ lang | upper }}</a>
         {% endfor %}
       {% endif %}
     </nav>

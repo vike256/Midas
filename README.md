@@ -155,8 +155,11 @@ home:
     - title: "My Project"
       url: "https://example.com/project"
 
+postPrefix: "p"
 recentPosts: 3
 ```
+
+`postPrefix` sets the URL path for default-language posts and their archive page. With the default `"p"`, posts live at `/p/my-post/` and the archive is `/p/`. Additional languages are unaffected — they use `/<lang>/my-post/` and `/<lang>/`.
 
 ## Customization
 

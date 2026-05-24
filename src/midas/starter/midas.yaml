@@ -8,7 +8,7 @@ languages:
 
 nav:
   - title: "Posts"
-    url: "/posts/"
+    url: "/p/"
 
 home:
   name: "Midas"
