@@ -1,3 +1,3 @@
 """Midas — a minimal, opinionated static site generator."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
