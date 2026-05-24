@@ -58,7 +58,7 @@ my-blog/
 ├── style.css           # Optional CSS overrides (empty by default)
 ├── content/            # Your markdown content
 │   ├── index.md        # Homepage
-│   ├── posts/          # Blog posts
+│   ├── p/              # Blog posts (matches postPrefix)
 │   └── img/            # Images (copied as-is)
 └── static/             # Other static assets (favicons, fonts, etc.)
 ```
@@ -85,7 +85,7 @@ For other assets (favicons, fonts, PDFs), drop them into `static/` and they are 
 
 ### Blog posts
 
-Create a markdown file in `content/posts/`:
+Create a markdown file in `content/p/`:
 
 ```markdown
 ---
@@ -101,7 +101,7 @@ Posts are sorted by date. The filename can also include a date prefix: `2025-01-
 
 ### Standalone pages
 
-Any `.md` file outside `posts/` becomes a page:
+Any `.md` file outside `p/` becomes a page:
 
 ```markdown
 ---
@@ -125,7 +125,7 @@ languages:
   additional: [fi]
 ```
 
-Then create content in `content/fi/posts/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
+Then create content in `content/fi/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
 
 ## Configuration
 

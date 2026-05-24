@@ -47,7 +47,7 @@ my-blog/
 ├── style.css           # Optional CSS overrides (empty by default)
 ├── content/            # Your markdown content
 │   ├── index.md        # Homepage
-│   ├── posts/          # Blog posts
+│   ├── p/              # Blog posts (matches postPrefix)
 │   └── img/            # Images (copied as-is to dist/)
 └── static/             # Other static assets (favicons, fonts, etc.)
 ```
@@ -68,7 +68,7 @@ Open `http://localhost:8000` to see your site. The server automatically picks th
 
 ### Blog posts
 
-Create a markdown file in `content/posts/`:
+Create a markdown file in `content/p/`:
 
 ```markdown
 ---
@@ -82,7 +82,7 @@ Your post content here.
 
 ### Standalone pages
 
-Any `.md` file outside `posts/` becomes a page. For example, `content/about.md` becomes `/about/`.
+Any `.md` file outside `p/` becomes a page. For example, `content/about.md` becomes `/about/`.
 
 ### Homepage
 
@@ -151,7 +151,7 @@ languages:
   additional: [fi]
 ```
 
-Then create content in `content/fi/posts/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
+Then create content in `content/fi/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
 
 ## Other commands
 

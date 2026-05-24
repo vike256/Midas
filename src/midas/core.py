@@ -56,11 +56,17 @@ def parse_markdown_file(path: Path) -> dict:
     }
 
 
-def classify_file(path: Path, frontmatter: dict) -> str:
+def classify_file(path: Path, frontmatter: dict, config: dict) -> str:
     if frontmatter.get("type"):
         return frontmatter["type"]
     if path.name.lower() == "index.md":
         return "home"
+    post_prefix = config.get("postPrefix", "")
+    if post_prefix and post_prefix in path.parts:
+        return "blog"
+    for lang in config["languages"].get("additional", []):
+        if lang in path.parts:
+            return "blog"
     if "posts" in path.parts:
         return "blog"
     return "page"
@@ -238,7 +244,7 @@ def build(config: dict) -> None:
             fm = parsed["frontmatter"]
             body = parsed["body"]
 
-            page_type = classify_file(md_path, fm)
+            page_type = classify_file(md_path, fm, config)
             language = fm.get("language") or infer_language(md_path, config)
             date = extract_date(md_path, fm)
             slug = generate_slug(md_path)
@@ -260,8 +266,12 @@ def build(config: dict) -> None:
                     url = f"/{language}/{slug}/"
                     output_file = DIST_DIR / language / slug / "index.html"
             else:  # page
-                url = f"/{slug}/"
-                output_file = DIST_DIR / slug / "index.html"
+                if language != config["languages"]["default"]:
+                    url = f"/{language}/{slug}/"
+                    output_file = DIST_DIR / language / slug / "index.html"
+                else:
+                    url = f"/{slug}/"
+                    output_file = DIST_DIR / slug / "index.html"
 
             pages.append({
                 "path": md_path,
