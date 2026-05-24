@@ -45,7 +45,11 @@ nav:
     url: "/about/"
 ```
 
-Custom navigation links for the header. If omitted, no navigation bar is shown.
+Controls the header. Three states:
+
+- **Omitted** — no header at all (ideal for single-page Linktree-style sites)
+- **`nav: []`** — header with just the site name as a home link
+- **`nav: [{title, url}, ...]`** — header with site name + navigation links
 
 ## home
 
