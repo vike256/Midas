@@ -102,8 +102,7 @@ Push your project to GitHub and connect it to a static host:
 - **Cloudflare Pages** — connect your repo and use the following settings:
   - Build command: `pip install midas-ssg && midas build`
   - Build output: `_dist`
-
-On Cloudflare Pages, you can also create a [Deploy Hook](https://developers.cloudflare.com/pages/configuration/deploy-hooks/). This gives you a URL you can call to trigger a new build automatically—for example, from a CMS webhook or a scheduled job.
+  - Make it automatic with [Deploy Hooks](https://developers.cloudflare.com/pages/configuration/deploy-hooks/)
 
 ## Customizing your site
 
