@@ -24,7 +24,7 @@
       {% else %}
         <a href="{{ '/' + config.postPrefix + '/' if config.postPrefix else '/posts/' }}">Posts</a>
       {% endif %}
-      {% if languages.additional %}
+      {% if not config.nav %}
         {% for lang in languages.additional %}
         <a href="/{{ lang }}/">{{ lang | upper }}</a>
         {% endfor %}
