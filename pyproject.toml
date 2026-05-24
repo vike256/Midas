@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "midas-ssg"
-version = "0.1.10"
+version = "0.1.11"
 description = "A minimal, opinionated static site generator"
 readme = "README.md"
 license = {text = "MIT"}

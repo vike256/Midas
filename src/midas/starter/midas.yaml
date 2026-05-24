@@ -1,6 +1,6 @@
 site:
   url: "https://midas.niila.fi"
-  name: "Midas"
+  name: "midas-ssg"
   description: "Midas Template"
   # fediverse: "@user@instance"
 
@@ -21,9 +21,7 @@ home:
     - name: website
       url: "https://midas.niila.fi"
   cards:
-    - title: "Niila's homepage"
-      url: "https://niila.fi"
-    - title: "Niila's GitHub"
-      url: "https://github.com/vike256"
+    - title: "Documentation"
+      url: "/p/getting-started/"
 
 recentPosts: 3
