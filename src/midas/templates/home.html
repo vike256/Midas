@@ -34,6 +34,12 @@
   </div>
   {% endif %}
 
+  {% if content %}
+  <div class="home-content">
+    {{ content | safe }}
+  </div>
+  {% endif %}
+
   {% for lang, posts in posts_by_language.items() %}
   {% set lang_posts = posts[:config.recentPosts] %}
   {% if lang_posts %}
