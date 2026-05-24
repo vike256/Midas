@@ -24,7 +24,7 @@ from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescap
 CONTENT_DIR = Path("content")
 PROJECT_TEMPLATES_DIR = Path("templates")
 STATIC_DIR = Path("static")
-DIST_DIR = Path("dist")
+DIST_DIR = Path("_dist")
 
 # Package paths (for built-in templates and CSS)
 PACKAGE_DIR = files("midas")
@@ -430,12 +430,12 @@ def build(config: dict) -> None:
     # ------------------------------------------------------------------
     # 7. Copy CSS and static assets
     # ------------------------------------------------------------------
-    # Copy package base CSS → dist/midas.css
+    # Copy package base CSS → _dist/midas.css
     package_css = PACKAGE_STATIC_DIR / "style.css"
     if package_css.exists():
         shutil.copy2(package_css, DIST_DIR / "midas.css")
 
-    # Copy project static/ contents → dist/
+    # Copy project static/ contents → _dist/
     if STATIC_DIR.exists():
         for src in STATIC_DIR.rglob("*"):
             if src.is_file():
@@ -443,7 +443,7 @@ def build(config: dict) -> None:
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dst)
 
-    # Copy content/img/ → dist/img/
+    # Copy content/img/ → _dist/img/
     img_dir = CONTENT_DIR / "img"
     if img_dir.exists():
         dst_img = DIST_DIR / "img"

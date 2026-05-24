@@ -37,16 +37,16 @@ After `midas init`, your project looks like this:
 
 ```
 my-blog/
+├── .gitignore          # Ignores _dist/, virtual environments, etc.
 ├── midas.yaml          # Site configuration
-├── style.css           # Optional CSS overrides (empty by default)
 ├── content/            # Your markdown content
 │   ├── index.md        # Homepage
 │   ├── p/              # Blog posts (matches postPrefix)
-│   └── img/            # Images (copied as-is to dist/)
+│   └── img/            # Images (copied as-is to _dist/)
 └── static/             # Other static assets (favicons, fonts, etc.)
 ```
 
-The built site is written to `dist/`.
+The built site is written to `_dist/`.
 
 ## Preview your site
 
@@ -90,11 +90,11 @@ When you are ready to publish, run:
 midas build
 ```
 
-This generates the static site in `dist/`.
+This generates the static site in `_dist/`.
 
 ## Deploying
 
-Upload the contents of `dist/` to a static host:
+Upload the contents of `_dist/` to a static host:
 
 - **GitHub Pages** — deploy via GitHub Actions
 - **Cloudflare Pages** — connect your repo and set the build command to `midas build`
@@ -103,7 +103,7 @@ Upload the contents of `dist/` to a static host:
 
 ### CSS overrides
 
-Edit `style.css` at your project root. It is loaded after the built-in `midas.css`, so any rule you write overrides the base. For example, to switch to dark mode:
+Edit `static/style.css`. It is loaded after the built-in `midas.css`, so any rule you write overrides the base. For example, to switch to dark mode:
 
 ```css
 body {
@@ -143,6 +143,6 @@ Then create content in `content/fi/` for Finnish posts. Frontmatter `language` t
 
 | Command | Description |
 |---|---|
-| `midas clean` | Delete the `dist/` folder |
+| `midas clean` | Delete the `_dist/` folder |
 
 That is everything you need to get started. Now go build something.

@@ -96,7 +96,7 @@ rss:
   additional: "{lang}/feed.xml"
 ```
 
-RSS feeds are only generated when `site.url` is set. The `{lang}` placeholder is replaced with each language code. Feed filenames determine the output path in `dist/`.
+RSS feeds are only generated when `site.url` is set. The `{lang}` placeholder is replaced with each language code. Feed filenames determine the output path in `_dist/`.
 
 ## Custom 404 page
 
@@ -112,4 +112,4 @@ The page you're looking for doesn't exist.
 [Go back home](/)
 ```
 
-It is rendered as `dist/404.html`.
+It is rendered as `_dist/404.html`.

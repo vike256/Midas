@@ -24,13 +24,6 @@ def _copy_tree(src, dst: Path) -> None:
             target.write_bytes(item.read_bytes())
 
 
-STYLE_CSS_HEADER = """/* Override Midas base styles here.
-   This file is loaded after midas.css, so any rule here wins.
-   Delete this file if you don't need custom styles.
-*/
-"""
-
-
 def init_project(target: Path) -> None:
     if target.exists() and any(target.iterdir()):
         print(f"Error: {target} is not empty. Midas init requires an empty directory.")
@@ -44,9 +37,11 @@ def init_project(target: Path) -> None:
     starter = files("midas") / "starter"
     _copy_tree(starter, target)
 
-    # Scaffold empty override files
-    (target / "static").mkdir(exist_ok=True)
-    (target / "static" / "style.css").write_text(STYLE_CSS_HEADER, encoding="utf-8")
+    # Copy gitignore template as .gitignore (setuptools skips dotfiles)
+    gitignore = starter / "gitignore"
+    (target / ".gitignore").write_bytes(gitignore.read_bytes())
+    # Remove the non-dot copy that _copy_tree created
+    (target / "gitignore").unlink(missing_ok=True)
 
     print(f"Initialized Midas project in {target}")
 
@@ -62,9 +57,9 @@ def main() -> None:
     init_parser = subparsers.add_parser("init", help="Initialize a new Midas project")
     init_parser.add_argument("folder", nargs="?", default=".", help="Target directory")
 
-    subparsers.add_parser("build", help="Build the site to dist/")
+    subparsers.add_parser("build", help="Build the site to _dist/")
     subparsers.add_parser("serve", help="Build and serve on localhost:8000")
-    subparsers.add_parser("clean", help="Wipe dist/")
+    subparsers.add_parser("clean", help="Wipe _dist/")
 
     args = parser.parse_args()
 
@@ -75,7 +70,7 @@ def main() -> None:
     if args.command == "clean":
         if DIST_DIR.exists():
             shutil.rmtree(DIST_DIR)
-        print("Cleaned dist/")
+        print("Cleaned _dist/")
         return
 
     config = load_config()

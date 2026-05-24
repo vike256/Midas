@@ -40,13 +40,13 @@ Open `http://localhost:8000` to see your site.
 |---|---|
 | `midas init <folder>` | Scaffold a new Midas project into `<folder>`. Requires an empty directory. |
 | `midas init` | Scaffold a new Midas project into the current directory. Also requires an empty directory. |
-| `midas build` | Build the site to `dist/`. |
+| `midas build` | Build the site to `_dist/`. |
 | `midas serve` | Build and start a local dev server. Defaults to `http://localhost:8000`; picks the next available port if busy. |
-| `midas clean` | Delete the `dist/` folder. |
+| `midas clean` | Delete the `_dist/` folder. |
 
 ## Deploying
 
-Upload the contents of `dist/` to a static host:
+Upload the contents of `_dist/` to a static host:
 
 - **GitHub Pages** — deploy via GitHub Actions
 - **Cloudflare Pages** — connect your repo and set the build command to `midas build`
@@ -57,8 +57,8 @@ After `midas init`, your project looks like this:
 
 ```
 my-blog/
+├── .gitignore          # Ignores _dist/, virtual environments, etc.
 ├── midas.yaml          # Site configuration
-├── style.css           # Optional CSS overrides (empty by default)
 ├── content/            # Your markdown content
 │   ├── index.md        # Homepage
 │   ├── p/              # Blog posts (matches postPrefix)
@@ -66,7 +66,7 @@ my-blog/
 └── static/             # Other static assets (favicons, fonts, etc.)
 ```
 
-The built site is written to `dist/`.
+The built site is written to `_dist/`.
 
 ## How it works
 
@@ -78,11 +78,11 @@ You never have to touch HTML. If you want to customize a template, create a `tem
 
 ### Styles
 
-Midas provides a built-in light minimalist stylesheet. It is copied to `dist/midas.css` on every build.
+Midas provides a built-in light minimalist stylesheet. It is copied to `_dist/midas.css` on every build.
 
-To customize styles, edit the `style.css` file at your project root. It is copied to `dist/style.css` and loaded **after** `midas.css`, so any rule you write overrides the base. Keep your overrides minimal — only change what you need.
+To customize styles, edit `static/style.css`. It is copied to `_dist/style.css` and loaded **after** `midas.css`, so any rule you write overrides the base. Keep your overrides minimal — only change what you need.
 
-For other assets (favicons, fonts, PDFs), drop them into `static/` and they are copied to `dist/`.
+For other assets (favicons, fonts, PDFs), drop them into `static/` and they are copied to `_dist/`.
 
 ## Writing content
 
@@ -200,7 +200,7 @@ rss:
 
 ### CSS overrides
 
-Edit `style.css` at your project root. For example, to switch to a dark background:
+Edit `static/style.css`. For example, to switch to a dark background:
 
 ```css
 body {
@@ -231,7 +231,7 @@ The built-in `home.html` template renders social icons by looking up SVG files i
 
 ### 404 page
 
-Create `content/404.md` to customize your 404 page. It is rendered as `dist/404.html`.
+Create `content/404.md` to customize your 404 page. It is rendered as `_dist/404.html`.
 
 ### Footer credit
 
