@@ -4,6 +4,7 @@ Midas — CLI entry point.
 
 import argparse
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -42,6 +43,19 @@ def init_project(target: Path) -> None:
     (target / ".gitignore").write_bytes(gitignore.read_bytes())
     # Remove the non-dot copy that _copy_tree created
     (target / "gitignore").unlink(missing_ok=True)
+
+    # Initialize git repository
+    try:
+        subprocess.run(
+            ["git", "init"],
+            cwd=target,
+            capture_output=True,
+            check=True,
+        )
+    except FileNotFoundError:
+        print("Warning: git not found. Skipping git init.")
+    except subprocess.CalledProcessError:
+        print("Warning: git init failed. You can run it manually.")
 
     print(f"Initialized Midas project in {target}")
 
