@@ -435,11 +435,6 @@ def build(config: dict) -> None:
     if package_css.exists():
         shutil.copy2(package_css, DIST_DIR / "midas.css")
 
-    # Copy project root style.css → dist/style.css (override)
-    project_css = Path("style.css")
-    if project_css.exists():
-        shutil.copy2(project_css, DIST_DIR / "style.css")
-
     # Copy project static/ contents → dist/
     if STATIC_DIR.exists():
         for src in STATIC_DIR.rglob("*"):

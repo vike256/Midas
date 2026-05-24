@@ -45,8 +45,8 @@ def init_project(target: Path) -> None:
     _copy_tree(starter, target)
 
     # Scaffold empty override files
-    (target / "style.css").write_text(STYLE_CSS_HEADER, encoding="utf-8")
     (target / "static").mkdir(exist_ok=True)
+    (target / "static" / "style.css").write_text(STYLE_CSS_HEADER, encoding="utf-8")
 
     print(f"Initialized Midas project in {target}")
 
