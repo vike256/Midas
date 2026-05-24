@@ -20,12 +20,6 @@ Requires Python 3.9 or newer.
 pip install midas-ssg
 ```
 
-Or install from source in editable mode for development:
-
-```bash
-pip install -e .
-```
-
 This installs the `midas` command-line tool.
 
 ## Quick start
@@ -47,6 +41,13 @@ Open `http://localhost:8000` to see your site.
 | `midas build` | Build the site to `dist/`. |
 | `midas serve` | Build and start a local development server on `http://localhost:8000`. |
 | `midas clean` | Delete the `dist/` folder. |
+
+## Deploying
+
+Upload the contents of `dist/` to a static host:
+
+- **GitHub Pages** — deploy via GitHub Actions
+- **Cloudflare Pages** — connect your repo and set the build command to `midas build`
 
 ## Directory structure
 

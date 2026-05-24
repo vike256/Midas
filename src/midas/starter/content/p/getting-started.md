@@ -8,16 +8,10 @@ This guide walks you through installing Midas and creating your first site.
 
 ## Installation
 
-Midas requires Python 3.9 or newer. Clone or download the repository, then install it:
+Midas requires Python 3.9 or newer.
 
 ```bash
-pip install .
-```
-
-For development, install in editable mode so changes take effect immediately:
-
-```bash
-pip install -e .
+pip install midas-ssg
 ```
 
 This installs the `midas` command-line tool.
@@ -96,7 +90,14 @@ When you are ready to publish, run:
 midas build
 ```
 
-This generates the static site in `dist/`. Deploy the contents of `dist/` to any static host.
+This generates the static site in `dist/`.
+
+## Deploying
+
+Upload the contents of `dist/` to a static host:
+
+- **GitHub Pages** — deploy via GitHub Actions
+- **Cloudflare Pages** — connect your repo and set the build command to `midas build`
 
 ## Customizing your site
 
