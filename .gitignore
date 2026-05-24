@@ -1,4 +1,4 @@
-dist/
+_dist/
 __pycache__/
 *.pyc
 .venv/
