@@ -266,7 +266,10 @@ def build(config: dict) -> None:
                     url = f"/{language}/{slug}/"
                     output_file = DIST_DIR / language / slug / "index.html"
             else:  # page
-                if language != config["languages"]["default"]:
+                if slug == "404" and language == config["languages"]["default"]:
+                    url = "/404.html"
+                    output_file = DIST_DIR / "404.html"
+                elif language != config["languages"]["default"]:
                     url = f"/{language}/{slug}/"
                     output_file = DIST_DIR / language / slug / "index.html"
                 else:
@@ -480,6 +483,21 @@ def _parse_date(value) -> datetime | None:
 class _QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
+
+    def send_error(self, code, message=None):
+        if code == 404:
+            try:
+                with open("404.html", "rb") as f:
+                    content = f.read()
+                self.send_response(404)
+                self.send_header("Content-Type", "text/html")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            except FileNotFoundError:
+                pass
+        super().send_error(code, message)
 
 
 def _bind_server(handler, start_port: int) -> tuple[socketserver.TCPServer, int]:
