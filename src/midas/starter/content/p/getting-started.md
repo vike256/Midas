@@ -80,7 +80,7 @@ Any `.md` file outside `p/` becomes a page. For example, `content/about.md` beco
 
 ### Homepage
 
-`content/index.md` with `type: home` becomes the homepage.
+`content/index.md` automatically becomes the homepage (the `type: home` frontmatter is inferred for `index.md`). You can add frontmatter fields like `name`, `bio`, or `profilePic` right in the file, or define them in `midas.yaml` under `home:`.
 
 ## Building for production
 
@@ -125,22 +125,7 @@ Then edit `templates/home.html`. When you run `midas build`, you will see a warn
 
 ### Configuration
 
-Edit `midas.yaml` to set your site name, URL, social links, and more:
-
-```yaml
-site:
-  url: "https://example.com"
-  name: "My Site"
-  description: "A personal website"
-
-home:
-  name: "Your Name"
-  bio: "A short description about you."
-  profilePic: "/img/profile.webp"
-  socials:
-    - name: github
-      url: "https://github.com/yourusername"
-```
+Edit `midas.yaml` to set your site name, URL, social links, and more. See the [configuration reference](/p/configuration/) for every available option.
 
 ### Multilingual sites
 

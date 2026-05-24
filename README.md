@@ -5,12 +5,14 @@ A minimal, opinionated static site generator. Drop markdown files into a folder,
 ## Features
 
 - **Zero config** for single-language sites
-- **Markdown** with syntax highlighting, tables, and strikethrough
+- **Markdown** with syntax highlighting, tables, strikethrough, inline HTML, and table of contents
 - **Multilingual** support as a first-class feature
 - **RSS feeds** per language
 - **Built-in templates and CSS** that update with the package
 - **Jinja2 templates** — optional override for power users
 - **Built-in dev server** — no extra tools needed
+- **Custom 404 page** — just add `content/404.md`
+- **Smart external links** — automatically adds `target="_blank"` and `rel="noopener noreferrer"` to links outside your site
 
 ## Installation
 
@@ -39,7 +41,7 @@ Open `http://localhost:8000` to see your site.
 | `midas init <folder>` | Scaffold a new Midas project into `<folder>`. Requires an empty directory. |
 | `midas init` | Scaffold a new Midas project into the current directory. Also requires an empty directory. |
 | `midas build` | Build the site to `dist/`. |
-| `midas serve` | Build and start a local development server on `http://localhost:8000`. |
+| `midas serve` | Build and start a local dev server. Defaults to `http://localhost:8000`; picks the next available port if busy. |
 | `midas clean` | Delete the `dist/` folder. |
 
 ## Deploying
@@ -70,7 +72,7 @@ The built site is written to `dist/`.
 
 ### Templates
 
-Midas ships with built-in Jinja2 templates (`base.html`, `home.html`, `post.html`, etc.) that live inside the installed package. When you update Midas (`pip install -U midas`), your site's HTML updates automatically.
+Midas ships with built-in Jinja2 templates (`base.html`, `home.html`, `post.html`, etc.) that live inside the installed package. When you update Midas (`pip install -U midas-ssg`), your site's HTML updates automatically.
 
 You never have to touch HTML. If you want to customize a template, create a `templates/` folder in your project and copy only the files you want to override. Midas will use your version instead of the built-in one, but you'll stop receiving updates for those specific templates.
 
@@ -98,7 +100,7 @@ date: 2025-01-01
 Your post content here.
 ```
 
-Posts are sorted by date. The filename can also include a date prefix: `2025-01-01-hello-world.md`.
+Posts are sorted by date. The date must be set in frontmatter — it is not inferred from the filename.
 
 ### Standalone pages
 
@@ -114,7 +116,7 @@ This is the about page.
 
 ### Homepage
 
-`content/index.md` with `type: home` becomes the homepage. You can put metadata in its frontmatter or in `midas.yaml` under `home:`.
+`content/index.md` automatically becomes the homepage (the `type: home` frontmatter is inferred for `index.md`). You can put metadata in its frontmatter or in `midas.yaml` under `home:`.
 
 ### Multilingual content
 
@@ -137,11 +139,18 @@ site:
   url: "https://example.com"
   name: "My Site"
   description: "A personal website"
-  copyright: "© 2024 Your Name"
+  copyright: "© 2025 Your Name"
+  fediverse: "@user@example.com"
 
 languages:
   default: en
   additional: [fi]
+
+nav:
+  - title: "Posts"
+    url: "/p/"
+  - title: "About"
+    url: "/about/"
 
 home:
   name: "Your Name"
@@ -158,9 +167,34 @@ home:
 
 postPrefix: "p"
 recentPosts: 3
+rss:
+  default: "feed.xml"
+  additional: "{lang}/feed.xml"
 ```
 
 `postPrefix` sets the URL path for default-language posts and their archive page. With the default `"p"`, posts live at `/p/my-post/` and the archive is `/p/`. Additional languages are unaffected — they use `/<lang>/my-post/` and `/<lang>/`.
+
+### Config keys
+
+| Key | Description |
+|---|---|
+| `site.url` | Your site's base URL. Enables RSS feeds and smart external-link handling. |
+| `site.name` | Site name shown in the header and page titles. |
+| `site.description` | Site description used in RSS feeds. |
+| `site.copyright` | Footer copyright text. Hide it by leaving empty. |
+| `site.fediverse` | Fediverse handle (e.g. `@user@example.com`). Adds a `<meta name="fediverse:creator">` tag. |
+| `languages.default` | Default language code (e.g. `en`). |
+| `languages.additional` | List of additional language codes (e.g. `[fi, sv]`). |
+| `nav` | List of `{title, url}` objects for the navigation bar. If omitted, a "Posts" link and language switchers are shown automatically. |
+| `home.name` | Name displayed on the homepage. |
+| `home.bio` | Short bio on the homepage. |
+| `home.profilePic` | Path to a profile picture. Auto-detected from `content/img/profile.*` if not set. |
+| `home.socials` | List of `{name, url}` social links. Rendered as icons. |
+| `home.cards` | List of `{title, url}` link cards on the homepage. |
+| `postPrefix` | URL prefix for default-language posts (default `"p"`). |
+| `recentPosts` | Number of recent posts shown on the homepage (default `3`). |
+| `rss.default` | Filename for the default-language RSS feed (default `feed.xml`). |
+| `rss.additional` | Filename pattern for additional-language feeds. Use `{lang}` as a placeholder (default `{lang}/feed.xml`). |
 
 ## Customization
 
@@ -194,6 +228,14 @@ These will not receive updates from Midas automatically.
 ### Icons
 
 The built-in `home.html` template renders social icons by looking up SVG files in `templates/icons/` by name. If you create a `templates/icons/` folder in your project, you can add or replace icons there.
+
+### 404 page
+
+Create `content/404.md` to customize your 404 page. It is rendered as `dist/404.html`.
+
+### Footer credit
+
+The built-in `base.html` template includes a "Created with Midas" link in the footer. Override the template if you'd like to remove or change it.
 
 ## Dependencies
 
