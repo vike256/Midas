@@ -51,8 +51,12 @@ def init_project(target: Path) -> None:
     print(f"Initialized Midas project in {target}")
 
 
+from . import __version__
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Midas — static site generator")
+    parser.add_argument("-v", "--version", action="version", version=f"Midas {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     init_parser = subparsers.add_parser("init", help="Initialize a new Midas project")
