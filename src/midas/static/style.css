@@ -142,6 +142,10 @@ main {
   margin-bottom: 1rem;
 }
 
+.home-content {
+  text-align: left;
+}
+
 .socials {
   display: flex;
   justify-content: center;
