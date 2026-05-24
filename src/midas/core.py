@@ -322,6 +322,11 @@ def build(config: dict) -> None:
 
     env.filters["icon"] = icon_filter
 
+    # If user has custom nav, don't show auto-generated language links in templates
+    template_languages = dict(config["languages"])
+    if config.get("nav"):
+        template_languages["additional"] = []
+
     # ------------------------------------------------------------------
     # 4. Render pages
     # ------------------------------------------------------------------
@@ -355,7 +360,7 @@ def build(config: dict) -> None:
 
         html = template.render(
             site=config["site"],
-            languages=config["languages"],
+            languages=template_languages,
             page=page,
             content=render_markdown(page["body"]),
             recent_posts=recent,
@@ -395,7 +400,7 @@ def build(config: dict) -> None:
         template = env.get_template("post-list.html")
         html = template.render(
             site=config["site"],
-            languages=config["languages"],
+            languages=template_languages,
             page={"title": "Posts", "url": list_url, "language": lang},
             posts=posts,
             posts_by_language=posts_by_language,
