@@ -26,15 +26,29 @@ def _copy_tree(src, dst: Path) -> None:
 
 
 def init_project(target: Path) -> None:
-    if target.exists() and any(target.iterdir()):
-        print(f"Error: {target} is not empty. Midas init requires an empty directory.")
-        print("Existing files in directory:")
-        for item in target.iterdir():
-            marker = " (dir)" if item.is_dir() else ""
-            print(f"  {item.name}{marker}")
-        sys.exit(1)
-
     target.mkdir(parents=True, exist_ok=True)
+    starter = files("midas") / "starter"
+
+    scaffold_items = {".gitignore"}
+    for item in starter.iterdir():
+        if item.name != "gitignore":
+            scaffold_items.add(item.name)
+
+    existing = [p for p in target.iterdir() if p.name != ".git"]
+    if existing:
+        conflicts = sorted(name for name in scaffold_items if (target / name).exists())
+        print(f"Warning: {target} is not empty.", end="")
+        if conflicts:
+            print(f" The following files would be overwritten:")
+            for name in conflicts:
+                print(f"  {name}")
+        else:
+            print()
+        answer = input("Continue? (y/N) ").strip().lower()
+        if answer != "y":
+            print("Aborted.")
+            sys.exit(1)
+
     starter = files("midas") / "starter"
     _copy_tree(starter, target)
 
