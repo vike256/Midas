@@ -2,6 +2,7 @@
 title: "Midas Markdown Showcase"
 description: "A tour of the markdown features available out of the box"
 date: 2026-05-24
+type: post
 ---
 
 Welcome to your new Midas site. This post is a quick tour of the markdown features you can use right out of the box.

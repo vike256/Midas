@@ -2,6 +2,7 @@
 title: "Configuration Reference"
 description: "All midas.yaml options explained"
 date: 2026-05-24
+type: post
 ---
 
 Everything in `midas.yaml` is optional — Midas works out of the box — but most sites will want at least `site.url` and some `home` settings.
@@ -18,22 +19,47 @@ site:
 ```
 
 | Key | Description |
-|---|---|
+|---|---|---|
 | `url` | Base URL. Enables RSS feeds and smart external-link handling. |
 | `name` | Site name shown in the header and page titles. |
 | `description` | Used in RSS feeds and the meta description tag. |
+| `default_language` | Fallback language for pages and RSS when nothing else is specified. |
 | `copyright` | Footer copyright text. Omit or leave empty to hide it. |
 | `fediverse` | Fediverse handle. Adds a `<meta name="fediverse:creator">` tag for verification. |
 
-## languages
+## collections
 
 ```yaml
-languages:
-  default: en
-  additional: [fi, sv]
+collections:
+  p:
+    title: "Posts"
+    language: en
+    feed: "/feed.xml"
+  notes:
+    title: "Notes"
+    language: en
+    feed: "/feed.xml"     # merges into /feed.xml alongside posts
+  shorts:
+    title: "Short Thoughts"
+    language: en
+    # no feed → no RSS
 ```
 
-Content for additional languages goes in subfolders: `site/fi/`, `site/sv/`. The `language` frontmatter field takes priority over folder inference.
+Define content groups. Each collection:
+- Maps to a directory under `site/` (e.g., `site/p/` for collection `p`)
+- Includes markdown files with `type: post` in that directory
+- Gets an auto-generated listing page at `/{name}/`
+- Optionally generates an RSS feed at the path set by `feed`
+  - **Multiple collections can push to the same feed path** — posts are merged and sorted by date.
+  - Omit `feed` entirely to exclude a collection from RSS.
+
+| Key | Description |
+|---|---|
+| `title` | Display name for listing pages and RSS feed |
+| `language` | Language code for RSS `<language>` tag. Omit to leave it out of the feed. |
+| `feed` | RSS output path like `"/feed.xml"` or `"/notes/feed.xml"` |
+
+For multilingual sites, create one collection per language. A `fi` collection maps to `site/fi/` — Finnish posts live there and get their own RSS feed.
 
 ## nav
 
@@ -76,31 +102,13 @@ home:
 | `socials` | List of `{name, url}` links rendered as icons. Built-in icons match common names like `github`, `email`, etc. |
 | `cards` | List of `{title, url}` link cards on the homepage. |
 
-## postPrefix
-
-```yaml
-postPrefix: "p"
-```
-
-Sets the URL path for default-language posts. With `"p"`, posts live at `/p/my-post/` and the archive is `/p/`. Set to `""` to put posts at the root. Additional languages are unaffected — they use `/<lang>/`.
-
 ## recentPosts
 
 ```yaml
 recentPosts: 3
 ```
 
-Number of recent posts shown on the homepage per language.
-
-## rss
-
-```yaml
-rss:
-  default: "feed.xml"
-  additional: "{lang}/feed.xml"
-```
-
-RSS feeds are only generated when `site.url` is set. The `{lang}` placeholder is replaced with each language code. Feed filenames determine the output path in `_dist/`.
+Number of recent posts shown on the homepage per collection.
 
 ## Custom 404 page
 

@@ -2,6 +2,7 @@
 title: "Getting Started with Midas"
 description: "How to install, set up, and start building your site"
 date: 2026-05-23
+type: post
 ---
 
 This guide walks you through installing Midas and creating your first site.
@@ -37,7 +38,7 @@ my-blog/
     ├── 404.md          # Not-found page
     ├── favicon.svg     # Site icon
     ├── style.css       # Your CSS overrides
-    ├── p/              # Blog posts (matches postPrefix)
+    ├── p/              # The "p" collection (posts)
     └── img/            # Images
 ```
 
@@ -55,25 +56,49 @@ Open `http://localhost:8000` to see your site. The server automatically picks th
 
 ## Writing content
 
-### Blog posts
+### Posts
 
-Create a markdown file in `site/p/`:
+Configure your collections in `midas.yaml`, then create content under matching directories in `site/`:
+
+```yaml
+# midas.yaml
+collections:
+  p:
+    title: "Posts"
+    language: en
+    feed: "/feed.xml"
+  notes:
+    title: "Notes"
+    language: en
+    feed: "/feed.xml"     # merged into the same feed as Posts
+```
+
+```
+# Directory structure
+site/
+├── p/hello-world.md       # → belongs to "p" collection
+├── notes/my-thoughts.md   # → belongs to "notes" collection
+└── about.md               # → standalone page (no type: post)
+```
+
+Each collection directory maps to a name in `midas.yaml`. Markdown files under it with `type: post` in frontmatter belong to that collection:
 
 ```markdown
 ---
 title: "Hello World"
 description: "My first post"
 date: 2026-05-23
+type: post
 ---
-
-Your post content here.
 ```
 
-### Standalone pages
+A post at `site/p/hello-world.md` appears at `/p/hello-world/`, is listed on the collection archive page, and is included in the RSS feed. Since both `p` and `notes` set `feed: "/feed.xml"`, posts from both collections are merged into a single feed sorted by date.
 
-Any `.md` file outside `p/` becomes a page. For example, `site/about.md` becomes `/about/`.
+### Pages
 
-Add standalone pages to `midas.yaml` under `nav:` if you want them in the top navigation:
+A markdown file without `type: post` becomes a standalone page. For example, `site/about.md` renders at `/about/`. Pages are not part of any collection and do not appear in RSS feeds.
+
+Add pages to `midas.yaml` under `nav:` if you want them in the top navigation:
 
 ```yaml
 nav:
@@ -122,15 +147,21 @@ Edit `midas.yaml` to set your site name, URL, social links, and more. See the [c
 
 ### Multilingual sites
 
-Add languages in `midas.yaml`:
+Create one collection per language:
 
 ```yaml
-languages:
-  default: en
-  additional: [fi]
+collections:
+  en:
+    title: "Posts"
+    language: en
+    feed: "/feed.xml"
+  fi:
+    title: "Suomi"
+    language: fi
+    feed: "/fi/feed.xml"
 ```
 
-Then create content in `site/fi/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
+Finnish posts go in `site/fi/` with `type: post`. Each collection gets its own listing page, RSS feed, and the `<language>` tag in RSS comes from the collection config.
 
 ## Other commands
 

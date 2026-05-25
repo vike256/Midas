@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="post-list-container">
-  <h1>Posts</h1>
+  <h1>{{ collection.title if collection else "Posts" }}</h1>
   {% if posts %}
   <ul class="post-list">
     {% for post in posts %}

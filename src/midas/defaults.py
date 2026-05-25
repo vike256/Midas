@@ -7,18 +7,11 @@ DEFAULT_CONFIG = {
         "description": "Midas Template",
         "copyright": "",
         "fediverse": "",
-    },
-    "languages": {
-        "default": "en",
-        "additional": [],
+        "default_language": "en",
     },
     "home": {},
-    "postPrefix": "p",
+    "collections": {},
     "recentPosts": 3,
-    "rss": {
-        "default": "feed.xml",
-        "additional": "{lang}/feed.xml",
-    },
 }
 
 

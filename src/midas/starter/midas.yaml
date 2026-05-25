@@ -2,10 +2,14 @@ site:
   url: "https://midas.niila.fi"
   name: "midas-ssg"
   description: "Midas Template"
+  default_language: en
   # fediverse: "@user@instance"
 
-languages:
-  default: en
+collections:
+  p:
+    title: "Posts"
+    language: en
+    feed: "/feed.xml"
 
 nav:
   - title: "Posts"

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ page.language if page else languages.default }}">
+<html lang="{{ page.language if page else site.default_language }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
   {% if page.title %}<meta property="og:title" content="{{ page.title }}">{% endif %}
   {% if page.description %}<meta property="og:description" content="{{ page.description }}">{% endif %}
   <meta property="og:url" content="{{ site.url }}{{ page.url }}">
-  <meta property="og:type" content="{% if page.type == 'blog' %}article{% else %}website{% endif %}">
+  <meta property="og:type" content="{% if page.type == 'post' %}article{% else %}website{% endif %}">
   <meta property="og:site_name" content="{{ site.name }}">
   {% if page.coverImage %}
   {% if page.coverImage.startswith('http') %}
@@ -28,11 +28,11 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/midas.css">
   <link rel="stylesheet" href="/style.css">
-  {% if config.rss and config.rss.default %}
-  {% set page_lang = page.language if page and page.language else languages.default %}
-  {% set rss_path = "/" + (config.rss.default if page_lang == languages.default else (config.rss.additional | replace('{lang}', page_lang))) %}
-  <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ rss_path }}">
+  {% for name, coll in collections.items() %}
+  {% if coll.feed %}
+  <link rel="alternate" type="application/rss+xml" title="{{ coll.title }}" href="{{ coll.feed }}">
   {% endif %}
+  {% endfor %}
 </head>
 <body class="{{ page.type if page and page.type else '' }}">
   {% if config.nav is defined %}
@@ -56,16 +56,11 @@
     {% if site.copyright %}
     <p>{{ site.copyright }}</p>
     {% endif %}
-    {% if config.rss and config.rss.default %}
-    <div class="footer-links">
-      <a href="/{{ config.rss.default }}">RSS</a>
-      {% if languages.additional %}
-        {% for lang in languages.additional %}
-        · <a href="/{{ config.rss.additional | replace('{lang}', lang) }}">{{ lang | upper }} RSS</a>
-        {% endfor %}
-      {% endif %}
-    </div>
+    {% for name, coll in collections.items() %}
+    {% if coll.feed %}
+    <a href="{{ coll.feed }}" class="rss-link">{{ coll.title }} RSS</a>
     {% endif %}
+    {% endfor %}
     <div class="footer-credit">
       <a href="https://midas.niila.fi">Created with Midas</a>
     </div>

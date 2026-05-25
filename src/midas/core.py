@@ -55,28 +55,25 @@ def parse_markdown_file(path: Path) -> dict:
     }
 
 
-def classify_file(path: Path, frontmatter: dict, config: dict) -> str:
+def classify_page(path: Path, frontmatter: dict) -> str:
     if frontmatter.get("type"):
         return frontmatter["type"]
     if path.name.lower() == "index.md":
         return "home"
-    post_prefix = config.get("postPrefix", "")
-    if post_prefix and post_prefix in path.parts:
-        return "blog"
-    for lang in config["languages"].get("additional", []):
-        if lang in path.parts:
-            return "blog"
-    if "posts" in path.parts:
-        return "blog"
     return "page"
 
 
-def infer_language(path: Path, config: dict) -> str:
-    parts = path.parts
-    for lang in config["languages"].get("additional", []):
-        if lang in parts:
-            return lang
-    return config["languages"]["default"]
+def assign_collection(path: Path, config: dict) -> str | None:
+    collections = config.get("collections", {})
+    if not collections:
+        return None
+    rel = path.relative_to(CONTENT_DIR)
+    parts = rel.parts
+    if len(parts) > 1:
+        name = parts[0]
+        if name in collections:
+            return name
+    return None
 
 
 def extract_date(path: Path, frontmatter: dict) -> str | None:
@@ -114,7 +111,6 @@ def make_markdown() -> markdown.Markdown:
 
 
 def render_markdown(body: str) -> str:
-    # Strikethrough: ~~text~~ -> <del>text</del>
     body = re.sub(r"~~(.+?)~~", r"<del>\1</del>", body)
     md = make_markdown()
     return md.convert(body)
@@ -156,20 +152,16 @@ def _add_external_link_attrs(html: str, site_url: str) -> str:
 
 def build_rss(
     config: dict,
-    language: str,
     posts: list[dict],
     output_path: Path,
+    language: str | None = None,
 ) -> None:
     site_url = config["site"]["url"].rstrip("/")
     site_name = config["site"]["name"]
     site_desc = config["site"].get("description", "")
 
-    if language == config["languages"]["default"]:
-        feed_url = f"{site_url}/feed.xml"
-        link_url = site_url
-    else:
-        feed_url = f"{site_url}/{language}/feed.xml"
-        link_url = f"{site_url}/{language}"
+    feed_url = f"{site_url}/{output_path.relative_to(DIST_DIR).as_posix()}"
+    link_url = site_url
 
     rss = ET.Element("rss", version="2.0", attrib={"xmlns:media": "http://search.yahoo.com/mrss/"})
     channel = ET.SubElement(rss, "channel")
@@ -177,7 +169,8 @@ def build_rss(
     ET.SubElement(channel, "title").text = site_name
     ET.SubElement(channel, "link").text = link_url
     ET.SubElement(channel, "description").text = site_desc
-    ET.SubElement(channel, "language").text = language
+    if language:
+        ET.SubElement(channel, "language").text = language
     ET.SubElement(channel, "lastBuildDate").text = _rfc822_date(datetime.now(timezone.utc))
     ET.SubElement(channel, "generator").text = "Midas"
 
@@ -218,12 +211,10 @@ def _rfc822_date(value) -> str:
 
 def load_icons() -> dict[str, str]:
     icons = {}
-    # Built-in icons shipped with the package
     builtin_icons_dir = PACKAGE_TEMPLATES_DIR / "icons"
     if builtin_icons_dir.exists():
         for svg_path in builtin_icons_dir.glob("*.svg"):
             icons[svg_path.stem] = svg_path.read_text(encoding="utf-8")
-    # User project icons override built-ins
     if ICONS_DIR.exists():
         for svg_path in ICONS_DIR.glob("*.svg"):
             icons[svg_path.stem] = svg_path.read_text(encoding="utf-8")
@@ -239,6 +230,9 @@ def build(config: dict) -> None:
         shutil.rmtree(DIST_DIR)
     DIST_DIR.mkdir(parents=True, exist_ok=True)
 
+    default_lang = config["site"].get("default_language", "en")
+    collections_cfg = config.get("collections", {})
+
     # ------------------------------------------------------------------
     # 1. Parse all markdown files
     # ------------------------------------------------------------------
@@ -249,34 +243,33 @@ def build(config: dict) -> None:
             fm = parsed["frontmatter"]
             body = parsed["body"]
 
-            page_type = classify_file(md_path, fm, config)
-            language = fm.get("language") or infer_language(md_path, config)
-            date = extract_date(md_path, fm)
+            page_type = classify_page(md_path, fm)
             slug = generate_slug(md_path)
+            date = extract_date(md_path, fm)
 
-            # Determine URL
+            # Assign collection for posts
+            collection_name = None
+            if page_type == "post":
+                collection_name = assign_collection(md_path, config)
+
+            # Language
+            if page_type == "post" and collection_name:
+                coll_cfg = collections_cfg.get(collection_name, {})
+                lang = fm.get("language") or coll_cfg.get("language") or default_lang
+            else:
+                lang = fm.get("language") or default_lang
+
+            # URL
             if page_type == "home":
                 url = "/"
                 output_file = DIST_DIR / "index.html"
-            elif page_type == "blog":
-                if language == config["languages"]["default"]:
-                    post_prefix = config.get("postPrefix", "")
-                    if post_prefix:
-                        url = f"/{post_prefix}/{slug}/"
-                        output_file = DIST_DIR / post_prefix / slug / "index.html"
-                    else:
-                        url = f"/{slug}/"
-                        output_file = DIST_DIR / slug / "index.html"
-                else:
-                    url = f"/{language}/{slug}/"
-                    output_file = DIST_DIR / language / slug / "index.html"
-            else:  # page
-                if slug == "404" and language == config["languages"]["default"]:
+            elif page_type == "post" and collection_name:
+                url = f"/{collection_name}/{slug}/"
+                output_file = DIST_DIR / collection_name / slug / "index.html"
+            else:
+                if slug == "404":
                     url = "/404.html"
                     output_file = DIST_DIR / "404.html"
-                elif language != config["languages"]["default"]:
-                    url = f"/{language}/{slug}/"
-                    output_file = DIST_DIR / language / slug / "index.html"
                 else:
                     url = f"/{slug}/"
                     output_file = DIST_DIR / slug / "index.html"
@@ -284,9 +277,10 @@ def build(config: dict) -> None:
             pages.append({
                 "path": md_path,
                 "type": page_type,
-                "language": language,
+                "language": lang,
                 "date": date,
                 "slug": slug,
+                "collection": collection_name,
                 "title": fm.get("title", "" if page_type == "home" else slug.replace("-", " ").title()),
                 "description": fm.get("description", ""),
                 "coverImage": fm.get("coverImage", ""),
@@ -297,16 +291,22 @@ def build(config: dict) -> None:
             })
 
     # ------------------------------------------------------------------
-    # 2. Group blog posts
+    # 2. Group posts by collection
     # ------------------------------------------------------------------
-    blog_posts = [p for p in pages if p["type"] == "blog"]
-    for post in blog_posts:
-        post["date_obj"] = _parse_date(post["date"])
-    blog_posts.sort(key=lambda p: p["date_obj"] or datetime.min, reverse=True)
-
-    posts_by_language: dict[str, list[dict]] = {}
-    for post in blog_posts:
-        posts_by_language.setdefault(post["language"], []).append(post)
+    collections_data: dict[str, dict] = {}
+    for coll_name in collections_cfg:
+        coll_posts = [p for p in pages if p["type"] == "post" and p["collection"] == coll_name]
+        for p in coll_posts:
+            p["date_obj"] = _parse_date(p["date"])
+        coll_posts.sort(key=lambda p: p["date_obj"] or datetime.min, reverse=True)
+        coll_cfg = collections_cfg.get(coll_name, {})
+        collections_data[coll_name] = {
+            "name": coll_name,
+            "title": coll_cfg.get("title", coll_name.title()),
+            "language": coll_cfg.get("language"),
+            "feed": coll_cfg.get("feed"),
+            "posts": coll_posts,
+        }
 
     # ------------------------------------------------------------------
     # 3. Prepare Jinja2
@@ -334,18 +334,18 @@ def build(config: dict) -> None:
     # 4. Render pages
     # ------------------------------------------------------------------
     for page in pages:
-        template_map = {"home": "home.html", "blog": "post.html", "page": "page.html"}
+        template_map = {"home": "home.html", "post": "post.html", "page": "page.html"}
         template_name = template_map.get(page["type"], "page.html")
         if PROJECT_TEMPLATES_DIR.exists() and (PROJECT_TEMPLATES_DIR / template_name).exists():
-            pass  # user override wins
+            pass
         elif not (PACKAGE_TEMPLATES_DIR / template_name).exists():
             template_name = "page.html"
 
         template = env.get_template(template_name)
 
-        # Recent posts for this page's language
-        lang = page["language"]
-        recent = posts_by_language.get(lang, [])[:config["recentPosts"]]
+        # Recent posts for this page
+        coll = collections_data.get(page["collection"]) if page["type"] == "post" and page["collection"] else None
+        recent = coll["posts"][:config.get("recentPosts", 3)] if coll else []
 
         # Home data
         home_data = config.get("home", {})
@@ -363,12 +363,11 @@ def build(config: dict) -> None:
 
         html = template.render(
             site=config["site"],
-            languages=config["languages"],
             page=page,
             content=render_markdown(page["body"]),
-            recent_posts=recent,
-            posts=posts_by_language.get(lang, []),
-            posts_by_language=posts_by_language,
+            collections=collections_data,
+            collection=coll,
+            posts=coll["posts"] if coll else [],
             home=home_data,
             icons=icons,
             config=config,
@@ -380,33 +379,23 @@ def build(config: dict) -> None:
         page["output_file"].write_text(html, encoding="utf-8")
 
     # ------------------------------------------------------------------
-    # 5. Render post-list pages per language
+    # 5. Render collection listing pages
     # ------------------------------------------------------------------
-    all_langs = [config["languages"]["default"]] + config["languages"].get("additional", [])
-    for lang in all_langs:
-        posts = posts_by_language.get(lang, [])
+    for coll_name, coll_data in collections_data.items():
+        posts = coll_data["posts"]
         if not posts:
             continue
 
-        if lang == config["languages"]["default"]:
-            post_prefix = config.get("postPrefix", "")
-            if post_prefix:
-                list_url = f"/{post_prefix}/"
-                list_output = DIST_DIR / post_prefix / "index.html"
-            else:
-                list_url = "/posts/"
-                list_output = DIST_DIR / "posts" / "index.html"
-        else:
-            list_url = f"/{lang}/"
-            list_output = DIST_DIR / lang / "index.html"
+        list_url = f"/{coll_name}/"
+        list_output = DIST_DIR / coll_name / "index.html"
 
         template = env.get_template("post-list.html")
         html = template.render(
             site=config["site"],
-            languages=config["languages"],
-            page={"title": "Posts", "url": list_url, "language": lang},
+            page={"title": coll_data["title"], "url": list_url, "language": coll_data.get("language") or default_lang},
+            collection=coll_data,
             posts=posts,
-            posts_by_language=posts_by_language,
+            collections=collections_data,
             home=config.get("home", {}),
             icons=icons,
             config=config,
@@ -418,29 +407,32 @@ def build(config: dict) -> None:
         list_output.write_text(html, encoding="utf-8")
 
     # ------------------------------------------------------------------
-    # 6. RSS feeds
+    # 6. RSS feeds — grouped by feed path
     # ------------------------------------------------------------------
     if config["site"].get("url"):
-        # Default language
-        default_lang = config["languages"]["default"]
-        default_posts = posts_by_language.get(default_lang, [])
-        rss_path = DIST_DIR / config["rss"]["default"]
-        build_rss(config, default_lang, default_posts, rss_path)
+        feeds: dict[str, dict] = {}
+        for coll_data in collections_data.values():
+            feed_path = coll_data.get("feed")
+            if not feed_path:
+                continue
+            if feed_path not in feeds:
+                feeds[feed_path] = {"posts": [], "language": None}
+            feeds[feed_path]["posts"].extend(coll_data["posts"])
+            if feeds[feed_path]["language"] is None and coll_data.get("language"):
+                feeds[feed_path]["language"] = coll_data["language"]
 
-        # Additional languages
-        for lang in config["languages"].get("additional", []):
-            rss_path = DIST_DIR / config["rss"]["additional"].format(lang=lang)
-            build_rss(config, lang, posts_by_language.get(lang, []), rss_path)
+        for feed_path, feed_data in feeds.items():
+            feed_data["posts"].sort(key=lambda p: p["date_obj"] or datetime.min, reverse=True)
+            feed_output = DIST_DIR / feed_path.lstrip("/")
+            build_rss(config, feed_data["posts"], feed_output, feed_data["language"])
 
     # ------------------------------------------------------------------
     # 7. Copy CSS and static assets
     # ------------------------------------------------------------------
-    # Copy package base CSS → _dist/midas.css
     package_css = PACKAGE_STATIC_DIR / "style.css"
     if package_css.exists():
         shutil.copy2(package_css, DIST_DIR / "midas.css")
 
-    # Copy all non-markdown files from site/ → _dist/ preserving structure
     if CONTENT_DIR.exists():
         for src in CONTENT_DIR.rglob("*"):
             if src.is_file() and src.suffix.lower() != ".md":
