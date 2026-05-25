@@ -26,7 +26,7 @@ Install editable: `pip install -e .`
 
 Then `midas --help` to test CLI changes.
 
-Do not confuse the package code with a user's project — there is no `content/` or `_dist/` at the repo root unless you're testing a build inside the repo.
+Do not confuse the package code with a user's project — there is no `site/` or `_dist/` at the repo root unless you're testing a build inside the repo.
 
 ## Versioning and releases
 

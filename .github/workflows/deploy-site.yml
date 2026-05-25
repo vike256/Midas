@@ -30,9 +30,7 @@ jobs:
         run: pip install midas-ssg
 
       - name: Init Midas project
-        run: |
-          midas init /tmp/midas-site
-          cp -r site/static/* /tmp/midas-site/static/ 2>/dev/null || true
+        run: midas init /tmp/midas-site
 
       - name: Build site
         run: midas build

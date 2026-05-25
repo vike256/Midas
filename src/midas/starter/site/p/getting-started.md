@@ -32,14 +32,13 @@ After `midas init`, your project looks like this:
 my-blog/
 ├── .gitignore          # Ignores _dist/, virtual environments, etc.
 ├── midas.yaml          # Site configuration
-├── content/            # Your markdown content
-│   ├── index.md        # Homepage
-│   ├── 404.md          # Not-found page
-│   ├── p/              # Blog posts (matches postPrefix)
-│   └── img/            # Images (copied as-is to _dist/)
-└── static/             # Other static assets
+└── site/               # Your site content
+    ├── index.md        # Homepage
+    ├── 404.md          # Not-found page
+    ├── favicon.svg     # Site icon
     ├── style.css       # Your CSS overrides
-    └── favicon.svg     # Site icon
+    ├── p/              # Blog posts (matches postPrefix)
+    └── img/            # Images
 ```
 
 The built site is written to `_dist/`.
@@ -58,7 +57,7 @@ Open `http://localhost:8000` to see your site. The server automatically picks th
 
 ### Blog posts
 
-Create a markdown file in `content/p/`:
+Create a markdown file in `site/p/`:
 
 ```markdown
 ---
@@ -72,7 +71,7 @@ Your post content here.
 
 ### Standalone pages
 
-Any `.md` file outside `p/` becomes a page. For example, `content/about.md` becomes `/about/`.
+Any `.md` file outside `p/` becomes a page. For example, `site/about.md` becomes `/about/`.
 
 Add standalone pages to `midas.yaml` under `nav:` if you want them in the top navigation:
 
@@ -84,7 +83,7 @@ nav:
 
 ### Homepage
 
-`content/index.md` is your homepage. Most of the content is configured in `midas.yaml` under `home:`.
+`site/index.md` is your homepage. Most of the content is configured in `midas.yaml` under `home:`.
 
 ## Building and deploying
 
@@ -108,7 +107,7 @@ Push your project to GitHub and connect it to a static host:
 
 ### CSS overrides
 
-Edit `static/style.css`. It is loaded after the built-in `midas.css`, so any rule you write overrides the base. For example, to switch to dark mode:
+Edit `site/style.css`. It is loaded after the built-in `midas.css`, so any rule you write overrides the base. For example, to switch to dark mode:
 
 ```css
 body {
@@ -131,7 +130,7 @@ languages:
   additional: [fi]
 ```
 
-Then create content in `content/fi/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
+Then create content in `site/fi/` for Finnish posts. Frontmatter `language` takes priority over folder inference.
 
 ## Other commands
 

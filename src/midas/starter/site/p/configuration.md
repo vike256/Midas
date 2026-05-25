@@ -33,7 +33,7 @@ languages:
   additional: [fi, sv]
 ```
 
-Content for additional languages goes in subfolders: `content/fi/`, `content/sv/`. The `language` frontmatter field takes priority over folder inference.
+Content for additional languages goes in subfolders: `site/fi/`, `site/sv/`. The `language` frontmatter field takes priority over folder inference.
 
 ## nav
 
@@ -72,7 +72,7 @@ home:
 |---|---|
 | `name` | Displayed prominently on the homepage. |
 | `bio` | Short text under the name. |
-| `profilePic` | Path to a profile picture. If omitted, Midas auto-detects `content/img/profile.*` (png, jpg, jpeg, or webp). |
+| `profilePic` | Path to a profile picture. If omitted, Midas auto-detects `site/img/profile.*` (png, jpg, jpeg, or webp). |
 | `socials` | List of `{name, url}` links rendered as icons. Built-in icons match common names like `github`, `email`, etc. |
 | `cards` | List of `{title, url}` link cards on the homepage. |
 
@@ -104,7 +104,7 @@ RSS feeds are only generated when `site.url` is set. The `{lang}` placeholder is
 
 ## Custom 404 page
 
-Create `content/404.md` to customize your error page:
+Create `site/404.md` to customize your error page:
 
 ```markdown
 ---

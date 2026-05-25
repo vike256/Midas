@@ -21,9 +21,8 @@ from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescap
 # Paths (relative to cwd where the command is run)
 # ---------------------------------------------------------------------------
 
-CONTENT_DIR = Path("content")
+CONTENT_DIR = Path("site")
 PROJECT_TEMPLATES_DIR = Path("templates")
-STATIC_DIR = Path("static")
 DIST_DIR = Path("_dist")
 
 # Package paths (for built-in templates and CSS)
@@ -436,21 +435,13 @@ def build(config: dict) -> None:
     if package_css.exists():
         shutil.copy2(package_css, DIST_DIR / "midas.css")
 
-    # Copy project static/ contents → _dist/
-    if STATIC_DIR.exists():
-        for src in STATIC_DIR.rglob("*"):
-            if src.is_file():
-                dst = DIST_DIR / src.relative_to(STATIC_DIR)
+    # Copy all non-markdown files from site/ → _dist/ preserving structure
+    if CONTENT_DIR.exists():
+        for src in CONTENT_DIR.rglob("*"):
+            if src.is_file() and src.suffix.lower() != ".md":
+                dst = DIST_DIR / src.relative_to(CONTENT_DIR)
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dst)
-
-    # Copy content/img/ → _dist/img/
-    img_dir = CONTENT_DIR / "img"
-    if img_dir.exists():
-        dst_img = DIST_DIR / "img"
-        if dst_img.exists():
-            shutil.rmtree(dst_img)
-        shutil.copytree(img_dir, dst_img)
 
     if overridden:
         print(f"Templates overridden: {', '.join(overridden)}")
