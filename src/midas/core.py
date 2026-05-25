@@ -171,7 +171,7 @@ def build_rss(
         feed_url = f"{site_url}/{language}/feed.xml"
         link_url = f"{site_url}/{language}"
 
-    rss = ET.Element("rss", version="2.0")
+    rss = ET.Element("rss", version="2.0", attrib={"xmlns:media": "http://search.yahoo.com/mrss/"})
     channel = ET.SubElement(rss, "channel")
 
     ET.SubElement(channel, "title").text = site_name
@@ -190,6 +190,11 @@ def build_rss(
             ET.SubElement(item, "pubDate").text = _rfc822_date(post["date"])
         if post.get("description"):
             ET.SubElement(item, "description").text = post["description"]
+        cover = post.get("coverImage", "")
+        if cover:
+            if not cover.startswith("http"):
+                cover = site_url + "/" + cover.lstrip("/")
+            ET.SubElement(item, "{http://search.yahoo.com/mrss/}thumbnail", url=cover)
 
     tree = ET.ElementTree(rss)
     output_path.parent.mkdir(parents=True, exist_ok=True)
