@@ -56,9 +56,13 @@
     {% if site.copyright %}
     <p>{{ site.copyright }}</p>
     {% endif %}
-    {% for name, coll in collections.items() %}
-    {% if coll.feed %}
-    <a href="{{ coll.feed }}" class="rss-link">{{ coll.title }} RSS</a>
+    {% for name, coll in collections.items() if coll.feed %}
+    {% if loop.first %}
+    <div class="footer-links">
+    {% endif %}
+    <a href="{{ coll.feed }}">{{ coll.title }} RSS</a>
+    {% if loop.last %}
+    </div>
     {% endif %}
     {% endfor %}
     <div class="footer-credit">
