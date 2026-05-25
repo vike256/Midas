@@ -57,13 +57,10 @@
     <p>{{ site.copyright }}</p>
     {% endif %}
     {% for name, coll in collections.items() if coll.feed %}
-    {% if loop.first %}
-    <div class="footer-links">
-    {% endif %}
+    {% if loop.first %}<div class="footer-links">{% endif %}
+    {% if not loop.first %}·{% endif %}
     <a href="{{ coll.feed }}">{{ coll.title }} RSS</a>
-    {% if loop.last %}
-    </div>
-    {% endif %}
+    {% if loop.last %}</div>{% endif %}
     {% endfor %}
     <div class="footer-credit">
       <a href="https://midas.niila.fi">Created with Midas</a>
