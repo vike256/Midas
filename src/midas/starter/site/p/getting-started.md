@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with Midas"
+title: "Start using Midas"
 description: "How to install, set up, and start building your site"
 date: 2026-05-23
 type: post
@@ -162,6 +162,53 @@ collections:
 ```
 
 Finnish posts go in `site/fi/` with `type: post`. Each collection gets its own listing page, RSS feed, and the `<language>` tag in RSS comes from the collection config.
+
+## Markdown features
+
+Midas supports standard Markdown plus these built-in extensions:
+
+**Fenced code blocks**
+
+````markdown
+```python
+def hello():
+    print("Hello, world!")
+```
+````
+
+**Tables**
+
+```markdown
+| Name  | Role   |
+|-------|--------|
+| Alice | Admin  |
+| Bob   | User   |
+```
+
+**Table of contents**
+
+Place `[TOC]` in your markdown where you want the table of contents to appear.
+
+**Syntax highlighting**
+
+Use fenced code blocks with a language tag. Requires Pygments.
+
+**Strikethrough**
+
+```markdown
+~~This text is struck through.~~
+```
+
+**Attribute lists**
+
+Attach HTML attributes (`id`, `class`, etc.) to block and inline elements:
+
+```markdown
+This paragraph is special.
+{: .lead }
+
+[Read more](about.html){: class="button" }
+```
 
 ## Other commands
 

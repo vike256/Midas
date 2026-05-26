@@ -99,6 +99,7 @@ def make_markdown() -> markdown.Markdown:
             "toc",
             "md_in_html",
             "codehilite",
+            "attr_list",
         ],
         extension_configs={
             "codehilite": {
